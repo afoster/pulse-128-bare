@@ -1,0 +1,18 @@
+# Build the frontend
+FROM node:lts-bullseye as frontend-build
+WORKDIR /app
+COPY . .
+
+RUN npm install
+RUN npm run build
+
+# Build the proxy/webserver
+FROM nginx:alpine
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+WORKDIR /app
+COPY . .
+# Bundle the frontend files built in the previous step
+COPY --from=frontend-build /app/public/build /app/public/build
+
+# Create a symlink to the Laravel storage folder
+RUN ln -sf /app/storage/app/public /app/public/storage

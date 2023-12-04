@@ -1,0 +1,37 @@
+version: "3.1"
+services:
+    redis:
+      image: redis:alpine
+      restart: unless-stopped
+
+    mariadb:
+      image: mariadb:10.11
+      environment:
+        - MYSQL_ROOT_PASSWORD=example
+        - MYSQL_DATABASE=example
+        - MYSQL_USER=example
+        - MYSQL_PASSWORD=example
+        - MARIADB_AUTO_UPGRADE=1
+      ports:
+        - "9003:3306"
+      restart: unless-stopped
+
+    webserver:
+      build:
+        context: .
+        dockerfile: Dockerfile.webserver
+      working_dir: /app
+      volumes:
+        - .:/app
+      ports:
+        - "9002:80"
+      restart: unless-stopped
+
+    app:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      working_dir: /app
+      volumes:
+        - .:/app
+      restart: unless-stopped
