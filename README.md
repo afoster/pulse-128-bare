@@ -36,3 +36,9 @@ docker-compose exec app php artisan migrate
 ```
 
 Pulse is now available at http://localhost:9002/pulse.
+
+Send some jobs
+
+```
+while [ true ]; do docker-compose exec app php artisan app:example; done
+```
